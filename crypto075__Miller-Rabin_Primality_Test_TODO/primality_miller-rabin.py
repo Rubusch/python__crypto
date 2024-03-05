@@ -32,8 +32,8 @@ Output
 Algorithm
     for i = 1 to s:
         choose random a element of {2, 3, ..., p~ - 2}
-TODO r??        
-        z = a^r mod p~ 
+TODO r??    
+        z = a^r mod p~
         if z != 1 and z != p~ - 1:
             for j = 1 to p~:
 TODO j is not used?     
@@ -44,7 +44,6 @@ TODO j is not used?
                 return "p~ is composite"
     return "p~ is likely prime"
 
-    
     Input: n > 3, an odd integer to be tested for primality;
     Input: k, a parameter that determines the accuracy of the test
     Output: composite if n is composite, otherwise probably prime
@@ -68,7 +67,7 @@ import random
 ### tools ###
 
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 
@@ -77,23 +76,23 @@ def square_and_multiply(base, exp, modulus=0):
     res = 1
     for char in strexp:
         ## debug message
-        print "binary: %s..."%char
+        print("binary: %s..." % char)
         res = res*res
         if 0 != modulus: res = res % modulus
         if char == '1':
             res = res*base
             if 0 != modulus: res = res % modulus
             ## debugging
-            print "\tidentified as '1', res = (res^2)*base = %d"%res
+            print("\tidentified as '1', res = (res^2)*base = %d"%res)
         else:
-            print "\tidentified as '0': res = (res^2) = %d"%res
+            print("\tidentified as '0': res = (res^2) = %d"%res)
     print ""
     return res
 
 
 ### main ###
 def main(argv=sys.argv[1:]):
-    print "Miller-Rabin's Primality Test"
+    print("Miller-Rabin's Primality Test")
     arg=545
 
     ## get arguments, or set default values
@@ -104,20 +103,20 @@ def main(argv=sys.argv[1:]):
             except:
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0] )
     if 4 >= arg: die("FATAL: arg must be greater than 4")
-    
-    k = 3 # 3 iterations, precision
-    print "arg = %d" % arg # number to test
-    print "k = %d" % k # number of iterations for precision
 
-#    base=random.randrange(2, arg-2)   
-    
+    k = 3 # 3 iterations, precision
+    print("arg = %d" % arg) # number to test
+    print("k = %d" % k)# number of iterations for precision
+
+#    base=random.randrange(2, arg-2)    
+
 
 
     ## get s, the logarithm to base 2 which still divides arg-1
     s = 1
     while 0 == (arg-1) % (2**s):
         s+=1
-        print "2**s = %d\t| %d"%(2**s, arg-1)   
+        print("2**s = %d\t| %d"%(2**s, arg-1))
     s-=1
     ## for 545 it will be 5
 
@@ -129,19 +128,18 @@ def main(argv=sys.argv[1:]):
 
     ## select a witness by random
 #    w = random.randrange(2, arg-2)
-    w = 492  
+    w = 492   
 
     for rnd in range(k):
-        print "%d ** %d mod %d = %d\t== 0 ?"%(w, d, arg, w**d%arg)   
+        print("%d ** %d mod %d = %d\t== 0 ?"%(w, d, arg, w**d%arg))
         if 0 == w**d % arg:
             
-            print "passed! TODO"
+            print("passed! TODO")
             break
         d*=2
 # http://www.johannes-bauer.com/compsci/millerrabin/index.php?zahl=545&iterationen=3&calculate=1
 
-    die("XXX d = %d"%d)    
-
+    die("XXX d = %d" % d)    
         
     
 
@@ -151,11 +149,11 @@ def main(argv=sys.argv[1:]):
 #
 
     
-    die( "XXX arg %d"%arg )     
+    die("XXX arg %d" % arg)     
     
 
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.\n")
