@@ -8,6 +8,10 @@
 
 # implementation of a stream cipher, based on a linear feedback shift register
 # (LFSR, as a PRNG - here just a static coefficient list and formula)
+#
+#
+# USAGE
+# $ ./LFSR-stream-cipher.py <input word, no spaces>
 
 import sys
 
@@ -24,7 +28,7 @@ bin2alpha = {}
 
 ## exit
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 
@@ -99,7 +103,7 @@ def print_alpha(binplaintext):
         cnt+=1
         val.append(c)
         if cnt%5 == 0:
-            print bin2alpha.get("".join(val))
+            print(bin2alpha.get("".join(val)))
             val=[]
 
 
@@ -109,7 +113,7 @@ def main(argv=sys.argv[1:]):
     plaintext = "TY4"
     if len(argv) > 0: plaintext = argv[0]
     plaintext = plaintext.upper()
-    print "provided input: %s"%plaintext
+    print(f"provided input: {plaintext}")
 
     ## init dictionary
     initdict()
@@ -129,4 +133,4 @@ def main(argv=sys.argv[1:]):
 if __name__ == '__main__':
     main()
 
-print "READY.\n"
+print("READY.")
