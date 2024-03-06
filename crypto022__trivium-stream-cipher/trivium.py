@@ -21,8 +21,9 @@
 # IMPORTANT: this implementation is meant as an educational demonstration only
 
 
-# TODO decryption
-# TODO work with real bit operations
+# TODO decryption          
+# TODO work with real bit operations           
+# TODO, adjust seed e.g. by clock          
 
 import sys
 
@@ -37,16 +38,16 @@ shifterC=0
 
 
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 def printrivium():
     global A
-    print "~~~ Clock Tick ~~~"
-    print "A: ","".join(A)
-    print "B: ","".join(B)
-    print "C: ","".join(C)
-    print "~~~ * ~~~\n"
+    print("~~~ Clock Tick ~~~")
+    print("A: ","".join(A))
+    print("B: ","".join(B))
+    print("C: ","".join(C))
+    print("~~~ * ~~~\n")
 
 def getpos(reg,idx,shifter):
     ## curiously, the indexes for trivium registers in literature start with '1'
@@ -128,21 +129,21 @@ def trivium():
     setpos(A, 1, XOR(outC, getpos(A, 69, shifterA)), shifterA)
 
     ## DEBUG snapshot
-#    printrivium()   
+#    printrivium()
 
     ## return iteration result bit - PRNG generated bit
     return result
 
 
 def warmup():
-    print "~~~ Warm-up Phase ~~~"
+    print("~~~ Warm-up Phase ~~~")
     clocktime = 4 * (len(A) + len(B) + len(C))
     for tick in range(clocktime):
         trivium()
 
 def encrypt(binplaintext):
-    print "~~~ Encryption Phase ~~~"
-    print "plaintext:\t%s"%"".join(binplaintext)
+    print("~~~ Encryption Phase ~~~")
+    print(f"plaintext:\t{binplaintext}")
     pseudorandom = []
     ciphertext = []
     for bit in binplaintext:
@@ -153,7 +154,7 @@ def encrypt(binplaintext):
 
         ## stream cipher
 #        sys.stdout.softspace=0
-#        print c,
+#        print(c,)
 
         ## or batch...
         ciphertext += c
@@ -161,8 +162,8 @@ def encrypt(binplaintext):
         ## DEBUG, print also the generated pseudo random bits
         pseudorandom += s
 #    print "" # for streaming..
-    print "PRNG:\t\t%s"%"".join(pseudorandom)
-    print "ciphertext:\t%s"%"".join(ciphertext)
+    print(f"PRNG:\t\t{pseudorandom}")
+    print(f"ciphertext:\t{ciphertext}")
 
 def decrypt():
 # TODO
@@ -192,4 +193,4 @@ def main(argv=sys.argv[1:]):
 if __name__ == '__main__':
     main()
 
-print "READY.\n"
+print("READY.")
