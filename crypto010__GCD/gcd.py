@@ -17,7 +17,7 @@ import sys
 ### tools ###
 
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 
@@ -27,7 +27,7 @@ def gcd(r0, r1):
     if r0 > r1: (a,b) = (r0, r1)
     else: (a,b) = (r1, r0)
     while b != 0:
-        print "gcd(%d, %d) = "%(a,b)
+        print(f"gcd({a}, {b}) = ", end="")
         tmp = b
         b = a % b
         a = tmp
@@ -44,19 +44,18 @@ def main(argv=sys.argv[1:]):
                 a=int(argv[0])
                 b=int(argv[1])
             except:
-                die("usage: %s <a> <b>\nOR call without arguments"%sys.argv[0])
+                die(f"usage: {sys.argv[0]} <a> <b>\nOR call without arguments")
 
     if 0 >= a: die("FATAL: a has to be greater than 0")
     if 0 >= b: die("FATAL: b has to be greater than 0")
 
-    print "a = %d, b = %d"%(a,b)
-    print "What is the greatest common divisor of %d and %d?\n" % (a,b)
-    print gcd(a,b)
-    print ""
+    print(f"a = {a}, b = {b}")
+    print(f"What is the greatest common divisor of {a} and {b}?")
+    print(gcd(a,b))
 
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
 
