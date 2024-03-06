@@ -17,7 +17,7 @@ import sys
 ### tools ###
 
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 
@@ -32,12 +32,10 @@ def gcd(r0, r1):
         a = tmp
     return a
 
-
 def lcm(r0, r1):
     ## return the least common multiple
-    print "lcm[%d; %d] = (%d * %d) / gcd(%d; %d) =" %(r0,r1,r0,r1,r0,r1)
+    print(f"lcm[{r0}; {r1}] = ({r0} * {r1}) / gcd({r0}; {r1}) = ", end="")
     return r0*r1/gcd(r0,r1)
-
 
 ### main ###
 def main(argv=sys.argv[1:]):
@@ -49,18 +47,17 @@ def main(argv=sys.argv[1:]):
                 a=int(argv[0])
                 b=int(argv[1])
             except:
-                die("usage: %s <a> <b>\nOR call without arguments"%sys.argv[0])
+                die(f"usage: {sys.argv[0]} <a> <b>\nOR call without arguments")
 
     if 0 >= a: die("FATAL: a has to be greater than 0")
     if 0 >= b: die("FATAL: b has to be greater than 0")
 
-    print "a = %d, b = %d"%(a,b)
-    print "What is the least common multiple of %d and %d?\n" % (a,b)
-    print lcm(a,b)
-    print ""
+    print(f"a = {a}, b = {b}")
+    print(f"What is the least common multiple of {a} and {b}?\n")
+    print(lcm(a,b))
 
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
