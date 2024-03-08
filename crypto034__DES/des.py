@@ -19,7 +19,6 @@
 #
 # IMPORTANT: this implementation is meant as an educational demonstration only
 
-
 ## additional settings #########################################################
 
 ## print debug output
@@ -29,20 +28,16 @@ DBG_OUTPUT = False
 DBG_PRINT_HEX = True
 ################################################################################
 
-
-
-
 import sys   # sys.exit()
 
 ### utils ###
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 def DBG(msg):
     if DBG_OUTPUT:
-        print msg
-
+        print(msg)
 
 def tostring(val, nbits):
     ## binary representation
@@ -95,7 +90,6 @@ class InitialPermutation():
                                    50,18,58,26,
                                    33, 1,41, 9,
                                    49,17,57,25]
-
 
 class KeySchedule():
     def __init__(self, inputkey):
@@ -257,7 +251,6 @@ class KeySchedule():
             key >>= 1
         ret = ret | key
         return ret
-
 
 class FFunction():
     def __init__(self, inputkey):
@@ -490,7 +483,9 @@ class DES():
 
     @staticmethod
     def _string2hex(text):
-        return int(text.encode('hex'),16)
+        ## python3 string to hex :int formatting by means of binascii package
+        import binascii
+        return int(binascii.hexlify(bytes(text,"iso_8859_1")), 16)
 
     @staticmethod
     def _hex2string(hexadecimal):
@@ -597,7 +592,6 @@ class DES():
 
         return state
 
-
 ### main ###
 def main(argv=sys.argv[1:]):
     blocksize = 64 # fixed, so variable is not used
@@ -621,20 +615,24 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x0001020304050607
         ## init some input text example
-        plaintext = "As armas e os barões assinalados,\n" \
-            "Que da ocidental praia Lusitana,\n" \
-            "Por mares nunca de antes navegados,\n" \
-            "Passaram ainda além da Taprobana,\n" \
-            "Em perigos e guerras esforçados,\n" \
-            "Mais do que prometia a força humana,\n" \
-            "E entre gente remota edificaram\n" \
+
+        ## NB: using '\n' may cause hickups at parsing for encryption,
+        ## thus prefer 'os.linesep' instead
+        import os
+        plaintext = "As armas e os barões assinalados, " + os.linesep + \
+            "Que da ocidental praia Lusitana, " + os.linesep + \
+            "Por mares nunca de antes navegados, " + os.linesep + \
+            "Passaram ainda além da Taprobana, " + os.linesep + \
+            "Em perigos e guerras esforçados, " + os.linesep + \
+            "Mais do que prometia a força humana, " + os.linesep + \
+            "E entre gente remota edificaram " + os.linesep + \
             "Novo Reino, que tanto sublimaram;"
 
-    print "initial key:\n%s, key length %d, block size %d\n" % (tostring(inputkey, 16), keylength, blocksize)
+    print(f"initial key:\n{tostring(inputkey, 16)}, key length {keylength}, block size {blocksize}\n")
 
-    print "plaintext:"
+    print("plaintext:")
     if len(plaintext) <= 0: die("plaintext was empty")
-    print "%s\n" % plaintext
+    print("{plaintext}\n")
 
     ## init the algorithm
     des = DES(inputkey)
@@ -651,10 +649,10 @@ def main(argv=sys.argv[1:]):
     ciphertext.append(des.encrypt(blocktext))
 
     ## print result
-    print "encrypted:"
+    print("encrypted:")
     for item in ciphertext:
-        print "%s"%tostring(item, 64)
-    print "\n"
+        print("{tostring(item, 64)}")
+    print("\n")
 
     ## decrypt
     decryptedtext = ""
@@ -662,10 +660,10 @@ def main(argv=sys.argv[1:]):
         decryptedtext += des.decrypt(block)
 
     ## print result
-    print "decrypted:"
-    print "%s\n" % decryptedtext
+    print("decrypted:")
+    print(f"{decryptedtext}")
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
