@@ -50,42 +50,39 @@ class InitialPermutation():
 
 ### utils ###
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 def printo(text):
     for idx in range(len(text)):
         if 0 == idx%8:
             if idx != 0:
-                print ""
+                print("")
         if int(text[idx]) < 10:
-            print " %s "%text[idx],
+            print(f"{text[idx]} ", end="")
         else:
-            print "%s "%text[idx],
-    print "\n"
-
-
+            print(f"{text[idx]} ", end="")
+    print("\n")
 
 ### main ###
 def main():
     ## init
     text = range(1,65)
     ip = InitialPermutation()
-    print "initial:"
+    print("initial:")
     printo(text)
 
     ## permute
     text = ip.initial_permute(text)
-    print "ip:"
+    print("ip:")
     printo(text)
 
     ## reverse
     text = ip.final_permute(text)
-    print "ip-rev:"
+    print("ip-rev:")
     printo(text)
-
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
