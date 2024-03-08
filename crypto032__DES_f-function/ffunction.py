@@ -10,7 +10,6 @@
 
 import sys   # sys.argv[]
 
-
 class FeistelNetwork():
     def __init__(self):
         pass
@@ -35,7 +34,6 @@ class FeistelNetwork():
         self._checklength(left,32)
         self._checklength(right,32)
         return right + left
-
 
 class FFunction():
     def __init__(self):
@@ -148,7 +146,6 @@ class FFunction():
         ## substitution boxes, which are often referred to as S-boxes
         self._checklength(text,48)
         # TODO, not implemented here, since key generation still missing
-        
         return text
 
     def sbox(self, text):
@@ -180,11 +177,9 @@ class FFunction():
         self._checklength(text,32)
         return [self._pick(text,pos) for pos in self._pbox]
 
-
-
 ### utils ###
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 def dec(binstr):
@@ -204,13 +199,12 @@ def printx(text, cols=8):
     for idx in range(len(text)):
         if 0 == idx%cols:
             if idx != 0:
-                print ""
+                print("")
         if int(text[idx]) < 10:
-            print " %s "%text[idx],
+            print(f" {text[idx]} ", end="")
         else:
-            print "%s "%text[idx],
-    print "\n"
-
+            print(f"{text[idx]} ", end="")
+    print("\n")
 
 def printhexlist(binlist):
     ## print binary value list, as hex values
@@ -223,9 +217,7 @@ def printhexlist(binlist):
         elem += str(binlist[idx])
     vals.append(dec(elem))
     res = [str(hex(v)).upper()[2:] for v in vals]
-    print "%s"%" ".join(map(str,res))
-
-
+    print("%s"%" ".join(map(str,res)))
 
 ### main ###
 def main():
@@ -235,9 +227,9 @@ def main():
     ffunc = FFunction()
     feistel = FeistelNetwork()
 
-    print "initial:"
+    print("initial:")
     printx(text)
-    print "HEX:"
+    print("HEX:")
     printhexlist(text)
 
     ## DES loops the following steps
@@ -256,8 +248,6 @@ def main():
     ## 5. permutation
     right_exp = ffunc.ppermute(right_exp)
 
-
-
     ## 6. merge left and right half
     text = feistel.round_xor(left_half, right_exp)
 
@@ -266,15 +256,13 @@ def main():
     # TODO switch left and right half, loop
 
     ## print result
-    print "\n"
-    print "result:"
+    print("\n")
+    print("result:")
     printx(text)
-    print "HEX:"
+    print("HEX:")
     printhexlist(text)
-
-
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
