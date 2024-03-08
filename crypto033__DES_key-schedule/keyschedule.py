@@ -12,7 +12,6 @@
 
 import sys   # sys.argv[]
 
-
 class KeySchedule():
     def __init__(self, inputkey):
         ## the key schedule derives 16 round keys k[i], each consisting of
@@ -43,12 +42,11 @@ class KeySchedule():
                 self._shiftrules.append(1)
             else:
                 self._shiftrules.append(2)
-        print "init shiftrules: %s"%", ".join(map(str,self._shiftrules))    
+        print("init shiftrules: %s"%", ".join(map(str,self._shiftrules)))
 
         ## initial 1. PC-1 permutation, once at beginning (stripping last 8-bit)
         self._inputkey = self.pc1_permutation(self._rawinputkey)
 #        printx(self._inputkey)  
-
 
     def _checklength(self, text, length):
         if length != len(text):
@@ -104,9 +102,8 @@ class KeySchedule():
         ## permute
         return [self._pick(key,pos) for pos in self._pc2]
 
-
     def get_encrypt_key(self, roundidx):
-#        print "\tencrypt"
+#        print("\tencrypt")
         ## generate keys for encryption
         ##
         ## iterate for each key until the roundidx is reached (easier to
@@ -134,9 +131,8 @@ class KeySchedule():
 
         return roundkey
 
-
     def get_decrypt_key(self, roundidx):
-#        print "\tdecrypt"
+#        print("\tdecrypt")
         ## generate keys for decryption, by the property
         ## C[0] == C[16] and D[0] == D[16]
         ## the first key for decryption is the last key for encryption
@@ -163,10 +159,9 @@ class KeySchedule():
 
         return roundkey
 
-
 ### utils ###
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 def bin2dec(binstr):
@@ -186,12 +181,12 @@ def printx(text, cols=8):
     for idx in range(len(text)):
         if 0 == idx%cols:
             if idx != 0:
-                print ""
+                print("")
         if int(text[idx]) < 10:
-            print " %s "%text[idx],
+            print(f" {text[idx]} ",end="")
         else:
-            print "%s "%text[idx],
-    print "\n"
+            print(f"{text[idx]} ",end="")
+    print("\n")
 
 def printhexlist(binlist):
     ## print binary value list, as hex values
@@ -204,9 +199,7 @@ def printhexlist(binlist):
         elem += str(binlist[idx])
     vals.append(bin2dec(elem))
     res = [str(hex(v)).upper()[2:] for v in vals]
-    print "%s"%" ".join(map(str,res))
-
-
+    print("%s"%" ".join(map(str,res)))
 
 ### main ###
 def main():
@@ -218,35 +211,35 @@ def main():
 
     keyschedule = KeySchedule(inputkey)
 
-    print "initial:"
+    print("initial:")
     printx(inputkey)
 
     ## generate encryption keys
-    print "encryption:"
+    print("encryption:")
     for idx in range(16):
-        print "round %d:"%(1+idx)
+        print(f"round {(1+idx)}:")
 
         ## encryption
         keyidx = idx
-        print "encrypt [keyidx %.2d]:"%(keyidx)
+        print("encrypt [keyidx %.2d]:"%(keyidx))
         key = keyschedule.get_encrypt_key(idx)
 #       printx(key,6) # print binary
 
-        print "    0x",
+        print("    0x", end="")
         printhexlist(key) # print hex
 
         ## decryption
         keyidx = 15 - idx
-        print "decrypt [keyidx %.2d]: 0x"%(keyidx)
+        print("decrypt [keyidx %.2d]: 0x"%(keyidx))
         key = keyschedule.get_decrypt_key(15 - idx)
 #        printx(key,6) # print binary
 
-        print "    0x",
+        print("    0x",end="")
         printhexlist(key) # print hex
 
-        print ""
+        print("")
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
