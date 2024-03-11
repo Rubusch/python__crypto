@@ -24,19 +24,19 @@ import sys   # sys.argv[]
 
 ### utils ###
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 class Present:
     def __init__(self, inputkey):
         self._sbox = [0xc,0x5,0x6,0xb,0x9,0x0,0xa,0xd,0x3,0xe,0xf,0x8,0x4,0x7,0x1,0x2]
-        self._sbox_inv = [self._sbox.index(i) for i in xrange(len(self._sbox))]
+        self._sbox_inv = [self._sbox.index(i) for i in range(len(self._sbox))]  ## python3
 
         self._permutation = [ 0,16,32,48, 1,17,33,49, 2,18,34,50, 3,19,35,51,
                               4,20,36,52, 5,21,37,53, 6,22,38,54, 7,23,39,55,
                               8,24,40,56, 9,25,41,57,10,26,42,58,11,27,43,59,
                              12,28,44,60,13,29,45,61,14,30,46,62,15,31,47,63]
-        self._permutation_inv = [self._permutation.index(i) for i in xrange(len(self._permutation))]
+        self._permutation_inv = [self._permutation.index(i) for i in range(len(self._permutation))]
 
         ## init all 31 keys once, then just go by index
         self._roundkeys = []
@@ -55,7 +55,7 @@ class Present:
     ## algorithm steps
     def _generateRoundkeys80(self, inputkey):
         key = inputkey
-        for idx in xrange(1,32):
+        for idx in range(1,32):
             ## cut out first 64 bit as round key
             self._roundkeys.append(key >> 16)
 
@@ -71,7 +71,7 @@ class Present:
     def _generateRoundkeys128(self, inputkeys):
         self._checklength(inputkey, 128)
         key = inputkey
-        for idx in xrange(1,32):
+        for idx in range(1,32):
             ## cut out first 64 bit as round key
             self._roundkeys.append(key >> 64)
 
@@ -88,25 +88,25 @@ class Present:
 
     def _sBoxLayer(self, state):
         ret = 0
-        for idx in xrange(16):
+        for idx in range(16):
             ret += self._sbox[(state >> (idx*4)) & 0xf] << (idx*4)
         return ret
 
     def _sBoxLayer_dec(self, state):
         ret = 0
-        for idx in xrange(16):
+        for idx in range(16):
             ret += self._sbox_inv[(state >> (idx*4)) & 0xf] << (idx*4)
         return ret
 
     def _pLayer(self, state):
         ret = 0
-        for idx in xrange(64):
+        for idx in range(64):
             ret += ((state >> (idx)) & 0x1) << self._permutation[idx]
         return ret
 
     def _pLayer_dec(self, state):
         ret = 0
-        for idx in xrange(64):
+        for idx in range(64):
             ret += ((state >> (idx)) & 0x1) << self._permutation_inv[idx]
         return ret
 
@@ -121,7 +121,9 @@ class Present:
         ## avoid padding issues
         ##
         ## string to number
-        state = int(plaintext.encode('hex'),16) &0xffffffffffffffff
+        ## python3 string to hex :int formatting by means of binascii package
+        import binascii
+        state = int(binascii.hexlify(bytes(plaintext,"iso_8859_1")), 16) &0xffffffffffffffff  ## python3
 
         for idx in range(31-1):
             state = self._addRoundKey(state, self._roundkeys[idx])
@@ -133,15 +135,16 @@ class Present:
 
     def decrypt(self, ciphertext):
         state = ciphertext
-        for idx in xrange(31-1):
+        for idx in range(31-1):
             state = self._addRoundKey(state, self._roundkeys[-idx-1])
             state = self._pLayer_dec(state)
             state = self._sBoxLayer_dec(state)
         state = self._addRoundKey(state, self._roundkeys[0])
 
-        ## conversion to string, simply prpends '0' in case of smaller blocks
+        ## conversion to string, simply prepends '0' in case of smaller blocks
         data = "%.16x" % (state)
-        ret = data.decode('hex')
+        import binascii
+        ret = bytes.fromhex(data).decode("iso_8859_1") ## python3
 
         return ret
 
@@ -151,23 +154,24 @@ def main():
 
     ## init some raw input key
     inputkey = 0xbbbb55555555eeeeffff
-    print "initial key:"
-    print "%#x\n" % inputkey
+    print("initial key:")
+    import os
+    print(f"{inputkey:x}" + os.linesep) ## python3
 
     ## init the algorithm
     present = Present(inputkey)
 
     ## init some input text
-    plaintext = "E também as memórias gloriosas\n" \
-        "Daqueles Reis, que foram dilatando\n" \
-        "A Fé, o Império, e as terras viciosas\n" \
-        "De África e de Ásia andaram devastando;\n" \
-        "E aqueles, que por obras valerosas\n" \
-        "Se vão da lei da morte libertando;\n" \
-        "Cantando espalharei por toda parte,\n" \
-        "Se a tanto me ajudar o engenho e arte."
-    print "plaintext:"
-    print "%s\n" % plaintext
+    plaintext = "E também as memórias gloriosas" + os.linesep + \
+        "Daqueles Reis, que foram dilatando" + os.linesep + \
+        "A Fé, o Império, e as terras viciosas" + os.linesep +  \
+        "De África e de Ásia andaram devastando;" + os.linesep + \
+        "E aqueles, que por obras valerosas" + os.linesep + \
+        "Se vão da lei da morte libertando;" + os.linesep + \
+        "Cantando espalharei por toda parte," + os.linesep + \
+        "Se a tanto me ajudar o engenho e arte." + os.linesep
+    print("plaintext:")
+    print(f"{plaintext}")
 
     ciphertext = []
     blocktext = ""
@@ -180,10 +184,10 @@ def main():
     ciphertext.append(present.encrypt(blocktext))
 
     ## print result
-    print "encrypted:"
+    print("encrypted:")
     for item in ciphertext:
-        print "%#x"%item
-    print "\n"
+        print(f"{item:x}")
+    print("")
 
     ## decrypt
     decryptedtext = ""
@@ -191,10 +195,10 @@ def main():
         decryptedtext += present.decrypt(block)
 
     ## print result
-    print "decrypted:"
-    print "%s\n" % decryptedtext
+    print("decrypted:")
+    print(f"{decryptedtext}")
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
