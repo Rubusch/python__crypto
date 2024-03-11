@@ -23,13 +23,12 @@ AES
 TODO published in which paper ???
 """
 
-
-import sys
+import sys, os
 
 ### tools ###
 
 def die(msg):
-    if 0 < len(msg): print msg
+    if 0 < len(msg): print(msg)
     sys.exit(1)
 
 
@@ -37,7 +36,7 @@ def die(msg):
 
 DEBUGGING = False
 def DBG(msg):
-    if DEBUGGING: print msg
+    if DEBUGGING: print(msg)
 
 DBG_PRINT_HEX = True
 def tostring(val, nbits):
@@ -240,7 +239,7 @@ class AES:
         ## init, e.g. keylength 128 and password:
         ## 0x000102030405060708090a0b0c0d0e0f
         Nb = 4
-        Nk = keylength / 32
+        Nk = int(keylength / 32)
         Nr = Nk + 6 # rounds keys
         words = []
         words = [0] * Nb * (Nr+1)
@@ -273,7 +272,7 @@ class AES:
                     ## ch: d7
 
                     ## the 0. char, XOR against round coefficient
-                    if sub == 0: ch ^= self._rcon[idx/Nk -1]
+                    if sub == 0: ch ^= self._rcon[int(idx/Nk) -1]
                     ## ch: d7
 
                     ## append new character
@@ -311,7 +310,7 @@ class AES:
         key = self._append(key, self._keys[rnd*4+2], 4)
         key = self._append(key, self._keys[rnd*4+3], 4)
         ret = key ^ state
-        print "R%d (key = %s)\t= %#x" % (rnd,tostring(key, self._keylength),ret)
+        print(f"R{rnd} (key = {tostring(key, self._keylength)})\t= {ret:x}")
         return ret
 
     def _substitution_layer__sub_bytes(self, state, table):
@@ -323,7 +322,7 @@ class AES:
         ## table = the substitution matrix either for encryption (self._sbox) or
         ##         decryption (self._inv_sbox)
         hexlst = 0x0
-        for idx in range(self._blocksize/8):
+        for idx in range(int(self._blocksize/8)):
             ch = self._getnth(state, idx, self._blocksize)
             val = self._tablelookup(table, ch)
             hexlst = self._append(hexlst, val)
@@ -338,7 +337,7 @@ class AES:
         ## table = the specific shift rows mapping table, for encryption
         ##         (self._shift_rows) or decryption (self._inv_shift_rows)
         hexlst = 0x0
-        for idx in range(self._blocksize/8):
+        for idx in range(int(self._blocksize/8)):
             hexlst = self._append(hexlst, self._getnth(state, table[idx], self._blocksize))
         return hexlst
 
@@ -432,6 +431,7 @@ class AES:
                 for ccol in range(len(table[0])):
                     vala = state >>(120 - ((col*4 + ccol)*8)) & 0xff
                     arr.append(self._gfmult(vala, table[row][ccol]))
+                from functools import reduce ## python3
                 val = reduce(lambda x,y: x^y, arr)
                 res = self._append(res, val)
         return res
@@ -467,8 +467,11 @@ class AES:
 
         ## init
         if ishex: state = plaintext
-        else: state = self._cutlastbits(int(plaintext.encode('hex'),16), self._blocksize)
-        DBG( "\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128))
+        else:
+            import binascii
+            tmp = int(binascii.hexlify(bytes(plaintext, "iso_8859_1")), 16) ## python3
+            state = self._cutlastbits(tmp, self._blocksize)
+        DBG(f"\nENCRYPTION\n\nplaintext: \t{tostring(state, 128)}")
 
         ## round 0
         state = self._add_round_key(state, 0)
@@ -501,7 +504,7 @@ class AES:
         state = self._add_round_key(state, self._rounds)
         DBG( "add key: \t%s\n"%tostring(state, 128))
 
-        print ""
+        print("")
         return state
 
 
@@ -554,7 +557,7 @@ class AES:
         DBG( "add key: \t%#.32x"%state )
 
         DBG( "\nfinal result: %s\n"%tostring(state, 128))
-        print ""
+        print("")
 
         ## as number
         if asnum: return state
@@ -573,7 +576,7 @@ def main(argv=sys.argv[1:]):
 #    aes = AES(inputkey, keylength)
 #    blocktext = 0x01000000000000000000000000000000
 #    ciphertext = aes.encrypt(blocktext, ishex=True)
-#    print "ciphered: %s"%tostring( ciphertext, 128)
+#    print("ciphered: %s"%tostring(ciphertext, 128))
 #    die("STOP")
 
     ## AES has fixed block size of 128 bit
@@ -607,10 +610,10 @@ def main(argv=sys.argv[1:]):
             "Cesse tudo o que a Musa antiga canta,\n" \
             "Que outro valor mais alto se alevanta."
 
-    print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
+    print(f"initial key:\n{inputkey:032x}, key length {keylength}, block size {blocksize}")
 
-    print "plaintext:"
-    print "%s\n" % plaintext
+    print("plaintext:")
+    print(f"{plaintext}")
 
     ## init the algorithm
     aes_encrypter = AES(inputkey, keylength)
@@ -619,10 +622,10 @@ def main(argv=sys.argv[1:]):
     ciphertext = aes_encrypter.encrypt_basic(plaintext, blocksize)
 
     ## print result
-    print "encrypted:"
+    print("encrypted:")
     for item in ciphertext:
-        print "%s"%tostring(item, blocksize)
-    print "\n"
+        print(f"{tostring(item, blocksize)}")
+    print(os.linesep)
 
     ## init the algorithm
     aes_decrypter = AES(inputkey, keylength)
@@ -631,10 +634,10 @@ def main(argv=sys.argv[1:]):
     decryptedtext = aes_decrypter.decrypt_basic(ciphertext, blocksize)
 
     ## print result
-    print "decrypted:"
-    print "%s\n" % decryptedtext
+    print("decrypted:")
+    print(f"{decryptedtext}")
 
 ### start ###
 if __name__ == '__main__':
     main()
-print "READY.\n"
+print("READY.")
