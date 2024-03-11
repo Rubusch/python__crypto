@@ -616,7 +616,7 @@ def main(argv=sys.argv[1:]):
         inputkey = 0x0001020304050607
         ## init some input text example
 
-        ## NB: using '\n' may cause hickups at parsing for encryption,
+        ## NB: in python3 using '\n' may cause hickups at parsing for encryption,
         ## thus prefer 'os.linesep' instead
         import os
         plaintext = "As armas e os barões assinalados, " + os.linesep + \
