@@ -15,10 +15,6 @@ from Cryptodome.Random import get_random_bytes
 from Cryptodome.Cipher import AES
 
 def encrypt(plaintext, key=None, key_size=256):
-    #def pad(s):
-    #    x = AES.block_size - len(s) % AES.block_size
-    #    return s + (chr(x) * x)
-    #padded_plaintext = pad(plaintext)
     if key is None:
         key = Random.new().read(key_size // 8)
 
@@ -54,10 +50,12 @@ if __name__ == '__main__':
     print(f"plaintext:\n{plaintext}")
 
     ciphertext_and_key = encrypt(plaintext)
-    ciphertext = "".join(map(str,ciphertext_and_key[0])) # TODO hex
+    ciphertext = bytearray(ciphertext_and_key[0]).hex()
+    #ciphertext = "".join(f"{i:02x}" for i in ciphertext_and_key[0]) ## alternative to the above
     print(f"encrypted:\n{ciphertext}" + os.linesep)
 
     decryptedtext = decrypt(*ciphertext_and_key) ## pass ciphertext and key
-    print(f"decrypted:\n{decryptedtext}" + os.linesep)
-
+    print(f"decrypted:\n{decryptedtext}")
     assert decryptedtext == plaintext
+
+    print("READY.")
