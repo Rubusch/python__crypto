@@ -33,7 +33,7 @@ functions from AES python port
 import sys
 
 def die(msg):
-    print msg
+    print(msg)
     sys.exit(1)
 
 ## Galois Multiplication
@@ -68,22 +68,22 @@ def mix_columns(s, Nb=4):
             # else:
             #     xaa[i] = s[i][c]<<1
 
-        print "a: [%s]"%", ".join("%.2x"%i for i in a)
-        print "xaa: [%s]"%", ".join("%.2x"%i for i in xaa)
+        print("a: [%s]"%", ".join("%.2x"%i for i in a))
+        print("xaa: [%s]"%", ".join("%.2x"%i for i in xaa))
 
         s[0][c] = xaa[0] ^ a[1] ^ xaa[1] ^ a[2] ^ a[3]
-        print "s[0][%d]\t= xaa[0] ^ a[1] ^ xaa[1] ^ a[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, xaa[0], a[1], xaa[1], a[2], a[3], s[0][c])
+        print(f"s[0][{c}]\t= xaa[0] ^ a[1] ^ xaa[1] ^ a[2] ^ a[3]\t= {xaa[0]:02x} ^ {a[1]:02x} ^ {xaa[1]:02x} ^ {a[2]:02x} ^ {a[3]:02x}\t= {s[0][c]:02x}")
 
         s[1][c] = a[0] ^ xaa[1] ^ a[2] ^ xaa[2] ^ a[3]
-        print "s[1][%d]\t= a[0] ^ xaa[1] ^ a[2] ^ xaa[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], xaa[1], a[2], xaa[2], a[3], s[1][c])
+        print(f"s[1][{c}]\t= a[0] ^ xaa[1] ^ a[2] ^ xaa[2] ^ a[3]\t= {a[0]:02x} ^ {xaa[1]:02x} ^ {a[2]:02x} ^ {xaa[2]:02x} ^ {a[3]:02x}\t= {s[1][c]:02x}")
 
         s[2][c] = a[0] ^ a[1] ^ xaa[2] ^ a[3] ^ xaa[3]
-        print "s[2][%d]\t= a[0] ^ a[1] ^ xaa[2] ^ a[3] ^ xaa[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], a[1], xaa[2], a[3], xaa[3], s[2][c])
+        print(f"s[2][{c}]\t= a[0] ^ a[1] ^ xaa[2] ^ a[3] ^ xaa[3]\t= {a[0]:02x} ^ {a[1]:02x} ^ {xaa[2]:02x} ^ {a[3]:02x} ^ {xaa[3]:02x}\t= {s[2][c]:02x}")
 
         s[3][c] = a[0] ^ xaa[0] ^ a[1] ^ a[2] ^ xaa[3]
-        print "s[3][%d]\t= a[0] ^ xaa[0] ^ a[1] ^ a[2] ^ xaa[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], xaa[0], a[1], a[2], xaa[3], s[1][c])
+        print(f"s[3][{c}]\t= a[0] ^ xaa[0] ^ a[1] ^ a[2] ^ xaa[3]\t= {a[0]:02x} ^ {xaa[0]:02x} ^ {a[1]:02x} ^ {a[2]:02x} ^ {xaa[3]:02x}\t= {s[1][c]:02x}")
 
-        print ""
+        print("")
 
     return s
 
@@ -92,21 +92,19 @@ def printstate(s):
         for col in range(4):
             ## dec
             val = s[row][col]
-#            if val <= 9: print " 0%d"%(val),
-#            else: print " %d"%(val),
+#            if val <= 9: print(f" 0{val}",end="")
+#            else: print(f" {val}",end="")
             ## hex
-            print " %#.2x"%(val),
-        print ""
-    print ""
+            print(f" {val:02x}",end="")
+        print("")
+    print("")
 
-    print "text [state]:"
+    print("text [state]:")
     for idx in range(16):
-        print "%.2x" % s[idx%4][idx//4],
-    print "\n"
-
+        print(f"{s[idx%4][idx//4]:02x}",end="")
+    print("\n")
 
 if __name__ == "__main__":
-
     Nb = 4
     ## incrementing number state
 #    state = [ [0]*Nb, [0]*Nb, [0]*Nb, [0]*Nb ]
@@ -124,4 +122,4 @@ if __name__ == "__main__":
 
     printstate(state)
 
-    print "READY."
+    print("READY.")
