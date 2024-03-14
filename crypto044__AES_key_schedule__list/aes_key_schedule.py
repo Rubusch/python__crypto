@@ -25,7 +25,7 @@ AES implementation, ported to python by Markus Birth
 import sys
 
 def die(msg):
-    print msg
+    print(msg)
     sys.exit(1)
 
 s_box = [
@@ -65,7 +65,7 @@ r_con = [
 def key_schedule(key, keylength):
     ## input: 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
     Nb = 4
-    Nk = keylength / 32 # 4
+    Nk = int(keylength / 32) # 4
     Nr = Nk + 6 # 10 round keys
     words = [0] * Nb * (Nr+1)
     temp = [0] * 4
@@ -104,7 +104,7 @@ def key_schedule(key, keylength):
             ## temp: d7 ab 76 fe
 
             ## XOR against round coefficient
-            for t in range(4): temp[t] ^= r_con[idx/Nk][t]
+            for t in range(4): temp[t] ^= r_con[int(idx/Nk)][t]
             ## temp: d6 ab 76 fe
 
         elif Nk>6 and idx%Nk == 4:
@@ -122,21 +122,21 @@ def key_schedule(key, keylength):
 
 def _print(key):
     if key < 0x10:
-        print "0%x" % key,
+        print(f"{key:02x}", end=" ")
     else:
-        print "%x" % key,
+        print(f"{key:x}", end=" ")
 
 def key_print(keys):
-    print "generated output:"
+    print("generated output:")
     for i in range(len(keys)):
-        if i%4 == 0 and i != 0: print ""
+        if i%4 == 0 and i != 0: print("")
         for j in range(len(keys[0])):
             _print(keys[i][j])
-    print "\n"
+    print("\n")
 
 def key_preparation(key, keylength):
     key_bytes = []
-    for idx in range(keylength/8):
+    for idx in range(int(keylength/8)):
         key_bytes.append( ((key >>(keylength - (idx+1)*8)) & 0xff) )
     return key_bytes
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     key = 0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f
     keylength=256
     
-    print "input key:\n%x\n" % key
+    print(f"input key:\n{key:032x}\n")
 
     ## input key
     ## 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
@@ -172,4 +172,4 @@ if __name__ == "__main__":
     ## print result
     key_print(keys)
 
-    print "READY.\n"
+    print("READY.")
