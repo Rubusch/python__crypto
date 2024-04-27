@@ -11,7 +11,7 @@ byte sequence implementation
 import sys
 
 def die(msg):
-    print msg
+    print(msg)
     sys.exit(1)
 
 ## S-box
@@ -39,7 +39,7 @@ def key_schedule(password, keylength):
     ## init, e.g. keylength 128 and password:
     ## 0x000102030405060708090a0b0c0d0e0f
     Nb = 4
-    Nk = keylength / 32
+    Nk = int(keylength / 32)
     Nr = Nk + 6 # rounds keys
     words = []
     words = [0] * Nb * (Nr+1)
@@ -74,7 +74,7 @@ def key_schedule(password, keylength):
                 ## ch: d7
 
                 ## the 0. char, XOR against round coefficient
-                if sub == 0: ch ^= r_con[idx/Nk -1]
+                if sub == 0: ch ^= r_con[int(idx/Nk) -1]
                 ## ch: d7
 
                 ## append new character
@@ -103,15 +103,15 @@ def key_schedule(password, keylength):
     return words
 
 def key_print(keys, ncols=4):
-    print "generated output:"
+    print("generated output:")
     for k in range(len(keys)):
-        if k % 4 == 0 and k != 0: print ""
+        if k % 4 == 0 and k != 0: print("")
         sz = "%x" % keys[k]
         if len(sz) < 8:
             for d in range(8 - len(sz)):
                 sz = '0' + sz
-        print "%s" % sz,
-    print "\n"
+        print(f"{sz}", end="")
+    print("\n")
 
 
 if __name__ == "__main__":
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 #    key = 0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f
 #    keylength = 256
 
-    print "input key:\n%x\n" % key
+    print("input key:\n%x\n" % key)
 
     ## input key
     ## 000102030405060708090a0b0c0d0e0f
@@ -144,4 +144,4 @@ if __name__ == "__main__":
     ## print result
     key_print(keys)
 
-    print "READY.\n"
+    print("READY.")
