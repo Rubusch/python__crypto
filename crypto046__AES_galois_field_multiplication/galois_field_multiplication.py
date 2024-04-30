@@ -16,9 +16,10 @@ http://de.wikipedia.org/wiki/Rijndael_MixColumns
 """
 
 import sys
+from functools import reduce
 
 def die(msg):
-    print msg
+    print(msg)
     sys.exit(1)
 
 exp_box = [[0x01,0x03,0x05,0x0f,0x11,0x33,0x55,0xff,0x1a,0x2e,0x72,0x96,0xa1,0xf8,0x13,0x35],
@@ -77,7 +78,7 @@ def main(argv=sys.argv[1:]):
             vala = int(argv[0],16)
             valb = int(argv[1],16)
             res = gf_mult(vala,valb)
-            print "a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (vala,valb,res)
+            print("a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (vala,valb,res))
         except TypeError:
             die("Wrong input format, type two numbers")
         except ValueError:
@@ -85,24 +86,24 @@ def main(argv=sys.argv[1:]):
         return
 
     ## an example with two value vectors
-    print "Galois Field Multiplication Example"
+    print("Galois Field Multiplication Example")
     arr = [0x02,0x03,0x01,0x01]
     brr = [0x63,0x53,0xe0,0x8c]
     crr = []
     for idx in range(len(arr)):
         res = gf_mult(arr[idx],brr[idx])
-        print "a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (arr[idx],brr[idx],res)
+        print("a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (arr[idx],brr[idx],res))
         crr.append(res)
-    print ""
+    print("")
 
-    print "final:\n[%s]"%",".join("%#.2x"%i for i in crr)
-    print ""
+    print("final:\n[%s]"%",".join("%#.2x"%i for i in crr))
+    print("")
 
     ## for mix columns operations
-    print "XORed result:\n%#.2x"%reduce(lambda x,y:x^y, crr)
-    print ""
+    print("XORed result:\n%#.2x"%reduce(lambda x,y:x^y, crr))
+    print("")
 
 
 if __name__ ==  "__main__":
     main()
-    print "READY.\n"
+    print("READY.")
