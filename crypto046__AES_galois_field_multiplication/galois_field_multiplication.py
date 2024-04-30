@@ -78,7 +78,7 @@ def main(argv=sys.argv[1:]):
             vala = int(argv[0],16)
             valb = int(argv[1],16)
             res = gf_mult(vala,valb)
-            print("a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (vala,valb,res))
+            print(f"a * b mod P(x) = 0x{vala:02x} * 0x{valb:02x} mod P(x) = 0x{res:02x}")
         except TypeError:
             die("Wrong input format, type two numbers")
         except ValueError:
@@ -92,7 +92,7 @@ def main(argv=sys.argv[1:]):
     crr = []
     for idx in range(len(arr)):
         res = gf_mult(arr[idx],brr[idx])
-        print("a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (arr[idx],brr[idx],res))
+        print(f"a * b mod P(x) = 0x{arr[idx]:02x} * 0x{brr[idx]:02x} mod P(x) = 0x{res:02x}")
         crr.append(res)
     print("")
 
@@ -100,7 +100,7 @@ def main(argv=sys.argv[1:]):
     print("")
 
     ## for mix columns operations
-    print("XORed result:\n%#.2x"%reduce(lambda x,y:x^y, crr))
+    print("XORed result:\n%#.2x" % reduce(lambda x,y:x^y, crr))
     print("")
 
 
